@@ -1,0 +1,32 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# sensitive data
+*.pem
+*.log
+.idea
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+*.crt
+*.key
+*.acl
+*.passwd
+~.keep
+mosquitto.conf
+
+# thingview uses node
+node_modules/
+.space/*
+
+# Dependency directories
+.history
+vendor/
+dist/

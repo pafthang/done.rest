@@ -1,0 +1,164 @@
+<!--Directory template
+
+ @param .Groups: map of groups by publisher agentID, each containing
+     the .Publisher and an array of .Things (TD documents)
+ @param .Error: in case of error to display
+ -->
+
+<!--After an initial load without data, auto-reload when viewed. -->
+{{$trigger := "intersect once"}}
+{{if .Directory}}
+    {{$trigger = "click from:#reload-directory"}}
+{{end}}
+
+<main class="container-fluid"
+      hx-get="/app/directory"
+      hx-trigger="{{$trigger}}"
+      hx-target="this"
+      hx-swap="outerHTML">
+
+	<!-- Header with a 'reload' button that triggers the htmx-get request above-->
+	<header class="directory-header h-row">
+		<div class="h-grow"></div>
+		<h4 style="margin-top: 1rem; margin-bottom: 0; margin-right: 5px;">Device & Service Directory</h4>
+		<div class="h-grow"></div>
+		<button id="reload-directory" class="outline h-icon-button"
+		        title="Reload directory">
+			<iconify-icon icon="mdi:refresh"></iconify-icon>
+		</button>
+
+	</header>
+
+	<div>
+		<!--=== for {.Publisher, .Things} in .Groups ===-->
+      {{range .Directory.Groups}}
+
+				<hr/>
+				<!-- Table of all things from template ".Things" data-->
+				<details>
+					<summary class="outline">
+						<span>Publisher:</span>
+						<span style="font-size: medium"><strong>{{.AgentID}}</strong></span>
+						<span>- {{len .Things}} things</span>
+					</summary>
+
+					<ul class="directory-table h-grid-table" striped border>
+						<li>
+							<div class="h-show-md"></div>
+							<div>Thing ID</div>
+							<div>Name</div>
+							<div class="h-show-sm">Type</div>
+							<div class="h-show-lg">Outputs</div>
+							<div class="h-show-lg">Actions</div>
+							<div class="h-show-xl">Updated</div>
+							<!--            <div scope="col">Description</div>-->
+						</li>
+
+						<!--=== for TD{} in .Things ===-->
+              {{$agentID := .AgentID}}
+              {{range .Things}}
+								<li>
+									<div class="h-show-md" title="Show TD">
+										<h-device-icon deviceType={{.AtType}}></h-device-icon>
+									</div>
+									<div>
+										<!-- hx-push-url does not trigger popState so how to show result?-->
+										<a href="/app/thing/{{$agentID}}/{{.ID}}"
+										   hx-get="/app/thing/{{$agentID}}/{{.ID}}"
+										   hx-target="#thing"
+										   hx-swap="innerHtml"
+										   hx-trigger="click"
+										   onclick="navigateTo(null,this.href)"
+										>{{.ID}}
+										</a>
+									</div>
+									<div>{{.Title}}</div>
+{{/*									<div class="h-show-sm">{{.AtType}}</div>*/}}
+									<div class="h-show-sm">{{.GetAtTypeVocab}}</div>
+									<div class="h-show-lg">{{len .Events}} outputs</div>
+									<div class="h-show-lg">{{len .Actions}} actions</div>
+									<div class="h-show-xl">{{.GetUpdated}}</div>
+								</li>
+              {{end}}
+
+						<tfoot>
+						<li>
+							<!--                    <div colspan="3">Nr Things: {{ len .Things }}</div>-->
+						</li>
+						</tfoot>
+					</ul>
+				</details>
+      {{end}}
+	</div>
+	<hr/>
+
+	<!-- TODO: add pager with first, prev, next, nr entries per page
+				or, use continuous scrolling.
+			-->
+
+    {{if not .Directory}}
+			<h-loading></h-loading>
+    {{end}}
+
+</main>
+
+
+<style>
+
+    @media (max-width: 576px) {
+        .directory-table {
+            /*xs, show column 2, 3 */
+            grid-template-columns:
+				            minmax(150px, max-content) minmax(100px, 1fr);
+        }
+    }
+
+    @media (min-width: 576px) {
+        .directory-table {
+            /*sm, show column 2,3,4 */
+            grid-template-columns:
+				      minmax(150px, max-content)
+				      minmax(150px, 1fr)
+              minmax(100px, 1fr);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .directory-table {
+            /*md,show column 1,2,3,4*/
+            grid-template-columns:
+	            60px
+              minmax(150px, max-content)
+              minmax(150px, 1fr)
+              minmax(100px, 1fr)
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .directory-table {
+            /*lg, show 1,2,3,4,5,6 */
+            grid-template-columns:
+				      60px
+			        minmax(150px, max-content)
+			        minmax(150px, 1fr)
+			        minmax(100px, 1fr)
+			        minmax(100px, 150px)
+			        minmax(100px, 150px)
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .directory-table {
+            /*xl, show all 7*/
+            grid-template-columns:
+				      60px
+			        minmax(150px, max-content)
+			        minmax(150px, 1fr)
+			        minmax(100px, 1fr)
+			        minmax(100px, 150px)
+			        minmax(100px, 150px)
+			        minmax(100px, 200px);
+        }
+    }
+
+</style>

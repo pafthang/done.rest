@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<Head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta name="description" content="Hive Of Things Viewer">
+	<!--    disable favicon during development so it won't be reloaded each change-->
+	<!--    <link rel="shortcut icon" href="/static/favicon.svg"/>-->
+
+	<script src="/static/htmx.org@1.9.10.js"></script>
+	<script src="/static/sse.js"></script>
+	<script src="/static/iconify-icon.min.js"></script>
+
+	<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.min.css"/>-->
+	<link rel="stylesheet" href="/static/pico-v2.0.0-rc3.css"/>
+
+	<link rel="stylesheet" href="/webcomp/h-theme.css"/>
+	<link rel="stylesheet" href="/webcomp/h-classes.css"/>
+	<script type="module" src="/webcomp/components.js"></script>
+	<title>{{.title}}</title>
+</Head>
+
+
+<script>
+    function showBody() {
+        let dt = window['HDarkToggle']
+        dt.setThemeFromLocalStorage()
+        document.body.hidden = false
+        window.displayIfTarget(window.location.pathname)
+        window.selectNavTargets("", window.location.href)
+    }
+
+    // listen for URL changes and re-activate the targets by setting the h-target class
+    window.addEventListener("popstate", (ev) => {
+        window.selectNavTargets(ev.oldURL, window.location.href)
+        window.displayIfTarget(window.location.pathname)
+    })
+    // window.addEventListener("hashchange", (ev) => {
+    //     alert("hashchange event", ev)
+    //     window.selectNavTargets(ev.oldURL, window.location.href)
+    //     window.displayIfTarget(window.location.pathname)
+    // })
+
+</script>
+
+
+<!--hx-boost lets links with href's target #appPage destination while without-->
+<body onload="showBody()" hidden hx-boost="true">
+
+{{/*Place to inject notification toasts (as in sse notifications in app.gohtml)*/}}
+<h-toast id="toast" vertical top duration="3000"></h-toast>
+
+{{/*The main template, login or app*/}}
+{{block "embed" .}} main template {{end}}
+
+</body>
+</html>
+
+<style>
+    :root {
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+    }
+
+    /*!* show a pointer for checkboxes and their labels*/
+    /*credits: https://stackoverflow.com/questions/41614446/change-pointer-for-checkbox-html*/
+    /**!*/
+    /*input[type="checkbox"], input[type="checkbox"] + label {*/
+    /*    cursor: pointer;*/
+    /*}*/
+
+</style>

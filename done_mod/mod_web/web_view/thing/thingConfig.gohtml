@@ -1,0 +1,107 @@
+<!--Thing configuration list-->
+<!--@param '.' object of type thing.DetailsTemplateData -->
+
+<ul class="h-grid-table thing-config" striped border>
+	<li>
+		<div class="h-show-sm">{{/*icon*/}}</div>
+		<div class="id-title">
+			<small><i>ID</i></small>
+			<span>Title</span>
+		</div>
+		<div style="padding-left: 60px">Value</div>
+		<div class="h-show-md">Default</div>
+		<div class="h-show-lg">Description</div>
+		<div class="h-show-sm">Updated</div>
+	</li>
+
+    {{range $k, $v := .Config}}
+        {{- /*gotype: github.com/hiveot/hub/tools/things.PropertyAffordance*/ -}}
+				<li>
+					<div class="h-show-sm">{{/*icon*/}}</div>
+					<div class="id-title">
+						<small><i>{{$k}}</i></small>
+						<span>{{$v.Title}}</span>
+					</div>
+					<div>
+						<button class="outline" style="border:none;
+						display:inline-flex; gap: 5px;
+						align-items: center; padding:0"
+						        hx-trigger="click"
+						        hx-get="/app/thing/editConfig"
+						        hx-vals='{"agentID":"{{$.AgentID}}","thingID":"{{$.ThingID}}","key":"{{$k}}"}'
+						        hx-target="#editConfigModal"
+						>
+							<iconify-icon style="padding: 0 10px" icon="mdi:pencil"></iconify-icon>
+                {{/*replace show value on sse event*/}}
+							<span sse-swap="{{$.AgentID}}/{{$.ThingID}}/{{$k}}" hx-swap="innerHTML">
+							{{$.Values.ToString $k}}
+							</span>
+                {{$v.UnitSymbol}}
+						</button>
+					</div>
+					<div class="h-show-md">{{$v.Default}}</div>
+					<div class="h-show-lg">{{$v.Description}}</div>
+					<div class="h-show-sm"
+					     sse-swap="{{$.AgentID}}/{{$.ThingID}}/{{$k}}/updated" hx-swap="innerHTML"
+					     title="Updated: {{$.Values.GetUpdated $k}} by {{($.Values.SenderID $k)}}"
+					>
+              {{$.Values.GetUpdated $k}}
+					</div>
+
+				</li>
+    {{end}}
+</ul>
+<div id="editConfigModal"></div>
+
+<style>
+
+    .thing-config {
+        overflow-x: auto;
+    }
+
+    @media (width < 576px) {
+        .thing-config {
+            /*xs, show column 2,3 */
+            grid-template-columns:
+                minmax(200px, max-content) /*name*/
+                minmax(100px, 1fr);
+        }
+    }
+
+    @media (width >= 576px) and (width < 768px) {
+        .thing-config {
+            /*sm, show column 1,2,3,6 */
+            grid-template-columns:
+				        40px /* icon*/
+                minmax(200px, max-content) /*name*/
+                minmax(100px, max-content) /*value*/
+				        minmax(100px, 1fr); /*updated*/
+        }
+    }
+
+    @media (width >= 768px) and (width < 1024px) {
+        .thing-config {
+            /*md,show column 1,2,3,4, 6 */
+            grid-template-columns:
+				        40px /*icon*/
+                minmax(200px, max-content) /*ID/title*/
+                minmax(100px, max-content) /*value*/
+				        minmax(100px, max-content) /*default*/
+                minmax(100px, 1fr); /*updated*/
+        }
+    }
+
+    @media (width >= 1024px) {
+        .thing-config {
+            /*lg, show all columns*/
+            grid-template-columns:
+				        40px /*icon*/
+                minmax(200px, max-content) /*id-title*/
+                minmax(100px, max-content) /*value*/
+                minmax(100px, max-content) /*default*/
+                minmax(100px, 1fr) /*description*/
+                minmax(100px, max-content); /*updated*/
+            }
+    }
+
+</style>

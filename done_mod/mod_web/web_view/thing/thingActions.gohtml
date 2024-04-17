@@ -1,0 +1,94 @@
+<!--Thing actions list-->
+<!--@param '.' object of type thing.DetailsTemplateData -->
+
+<ul class="h-grid-table thing-actions" striped border>
+	<li>
+		<div class="h-show-sm">{{/*icon*/}}</div>
+		<div class="id-title">
+			<small><i>ID</i></small>
+			<span>Title</span>
+		</div>
+		<div>Type</div>
+		<div class="h-show-md">Last Action</div>
+		<div class="h-show-lg">Description</div>
+		<div class="h-show-md">Updated</div>
+	</li>
+
+    {{range $k,$v := .TD.Actions }}
+        {{- /*gotype: github.com/hiveot/hub/tools/things.ActionAffordance*/ -}}
+				<li>
+					<div class="h-show-sm">{{/*icon*/}}</div>
+					<div class="id-title">
+						<small><i>{{$k}}</i></small>
+						<span>{{$v.Title}}</span>
+					</div>
+					<div>{{$v.ActionType}}</div>
+					<div class="h-show-md"
+					     sse-swap="{{$.AgentID}}/{{$.ThingID}}/{{$k}}" hx-swap="innerHTML">
+						{{$.Values.ToString $k}}
+					</div>
+					<div class="h-show-lg">{{$v.Description}}</div>
+					<div class="h-show-md"
+					     sse-swap="{{$.AgentID}}/{{$.ThingID}}/{{$k}}/updated" hx-swap="innerHTML"
+					     title="Updated: {{$.Values.GetUpdated $k}} by {{($.Values.SenderID $k)}}">
+              {{$.Values.GetUpdated $k}}
+					</div>
+				</li>
+    {{end}}
+    {{if not .TD.Actions}}
+			<li>
+				<div style="grid-column: 1/5 ">
+					<i>No actions defined...</i>
+				</div>
+			</li>
+    {{end}}
+</ul>
+
+
+<style>
+
+    @media (width < 576px) {
+        .thing-actions {
+            /*xs, show column 2, 3 */
+            grid-template-columns:
+				            minmax(200px, max-content) /* ID/title */
+				            minmax(100px, 1fr); /*type*/
+        }
+    }
+
+    @media (width >= 576px) {
+        .thing-actions {
+            /*sm, show column 1,2,3 */
+            grid-template-columns:
+				            40px   /* icon*/
+				            minmax(200px, max-content) /*ID/title*/
+				            minmax(100px, 1fr); /*type*/
+        }
+    }
+
+    @media (width >= 768px) {
+        .thing-actions {
+            /*md,show column 1,2,3,4,5 */
+            grid-template-columns:
+				            40px  /*icon*/
+				            minmax(200px, max-content) /*ID/title*/
+				            minmax(100px, max-content) /*type*/
+				            minmax(100px, max-content) /*last action*/
+				            minmax(100px, 1fr);        /*updated*/
+        }
+    }
+
+    @media (width >= 1024px) {
+        .thing-actions {
+            /*lg,show column 1-6 */
+            grid-template-columns:
+				            40px/*icon*/
+				            minmax(200px, max-content) /*name*/
+				            minmax(100px, max-content)/*type*/
+				            minmax(100px, max-content) /*last action*/
+				            minmax(100px, 1fr) /*description*/
+				            minmax(100px, max-content); /*date*/
+        }
+    }
+
+</style>

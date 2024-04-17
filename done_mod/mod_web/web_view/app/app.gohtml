@@ -1,0 +1,82 @@
+<!--Main application view with header, page content and footer-->
+<!--javascript the regular get takes place-->
+
+<div id="app" class="app" hx-ext="sse" sse-connect="/sse">
+
+    {{/*	The notify event is displayed by the toast popup. content is "type:message" */}}
+	<div sse-swap="notify" hx-target="#toast" hx-swap="beforeend"></div>
+
+	<div class="app-head ">
+      {{block "appHead" .}}App header goes here {{end}}
+	</div>
+
+	<!-- These pages are updated using htmx fragments.
+			eg: hx-get="/dashboard" hx-target="#dashboard" hx-swap="innerHtml"
+	 -->
+	<div class="app-pages" tabindex="1" style="outline: none">
+		<div id="status" class="hidden" displayIfTarget="/app/status">
+        {{template "status.gohtml" .}}
+		</div>
+		<div id="dashboard" class="hidden" displayIfTarget="/app/dashboard">
+        {{template "dashboard.gohtml" .}}
+		</div>
+		<div id="directory" class="hidden" displayIfTarget="/app/directory">
+        {{template "directory.gohtml" .}}
+		</div>
+		<div id="about" class="hidden" displayIfTarget="/app/about">
+        {{template "about.gohtml" .}}
+		</div>
+		<div id="thing" class="hidden" displayIfTarget="/app/thing">
+        {{template "thingDetails.gohtml" .}}
+		</div>
+	</div>
+
+	<div class=" ">
+      {{block "appFooter" .}} App footer for {{.title}} goes here {{end}}
+	</div>
+
+</div>
+
+<style>
+    .app {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow-y: hidden; /*no scrollbar at the app*/
+    }
+
+    .app-head {
+        /*just some testing for pixel perfect placement??*/
+        /*margin-top: -1px;*/
+        /*padding-top: 1px;*/
+    }
+
+    .app-pages {
+        width: 100%;
+        height: 100%;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .app-pages > div {
+        display: none;
+    }
+
+    /*.app-pages div:target {*/
+    /*    display: flex;*/
+    /*    flex-direction: column;*/
+    /*    height: 100%;*/
+    /*    width: 100%;*/
+    /*}*/
+
+    /* default icons are a tiny 14px */
+    iconify-icon {
+        font-size: 20px;
+    }
+
+
+</style>
+

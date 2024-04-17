@@ -1,0 +1,73 @@
+<!-- dropdown menu -->
+<h-dropdown position="bottomright">
+    <button slot="button" class="h-icon-button  outline">
+        <iconify-icon icon="mdi:menu"></iconify-icon>
+    </button>
+
+    <ul class="h-shadow h-panel">
+        <!--TODO: use a link component which stops href propagation and invokes navigateTo
+        and changes focus to the new window
+        -->
+        <li>
+            <iconify-icon icon='mdi:view-dashboard'></iconify-icon>
+            <a href="/app/dashboard" onclick="window.navigateTo(event,this.href)">
+                Dashboard</a>
+        </li>
+        <li>
+            <iconify-icon icon='mdi:view-dashboard'></iconify-icon>
+            <a href="/app/directory" onclick="window.navigateTo(event,this.href)">
+                Directory</a>
+        </li>
+        <li>
+            <iconify-icon icon="mdi:bell"></iconify-icon>
+            <a href="/app/notifications" onclick="window.navigateTo(event,this.href)">
+                Notifications</a>
+        </li>
+
+
+        <li class="h-horizontal-divider"></li>
+
+        <li>
+            <iconify-icon icon='mdi:logout'></iconify-icon>
+            <a href="/logout" hx-boost="false">Logout</a>
+        </li>
+        <li>
+            <iconify-icon icon='mdi:info'></iconify-icon>
+
+            <a href="/app/about" onclick="window.navigateTo(event,this.href)">
+                About Hiveoview</a>
+        </li>
+
+    </ul>
+</h-dropdown>
+
+<style>
+
+    h-dropdown li {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 7px;
+        width: 100%;
+
+        /*align-items: start;*/
+        /*margin: 0;*/
+    }
+
+    /*h-dropdown li:has(a.h-target) {*/
+    /*    background-color: var(--pico-form-element-selected-background-color);*/
+    /*}*/
+    h-dropdown li.h-target {
+        background-color: var(--pico-form-element-selected-background-color);
+    }
+
+    .menu-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-left: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+</style>
+
